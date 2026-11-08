@@ -1,0 +1,120 @@
+<h2>先想清楚“能量”是什么</h2>
+
+<p>物理里，一根弹簧被拉开要储存能量，拉得越长能量越大。数学里也一样：如果一个函数在相邻两点之间跳得很厉害，我们就说它“不光滑”，给它记一笔能量。最常用的记账方式是</p>
+
+<div class="formula">$$E(f)=\frac12\int|\nabla f|^2\,dA$$</div>
+
+<p>读法：把每一小块面积上的“斜率平方”加起来，再乘 $\frac12$。斜率越大，能量越大。所以“让能量最小”就等于“让函数尽量平缓”。</p>
+
+<div class="intuition">
+<b>直觉</b>：把函数值想成一片地形的高度。$|\nabla f|$ 是坡度。整片地形的“陡峭程度总和”就是能量。最小化能量＝把地形摊平（在约束允许的范围内）。<b>失效边界</b>：这个类比只对“函数”成立，对“曲面形状”本身不成立——想摊平曲面得用别的能量（第 6 章）。
+</div>
+
+<h2>把积分拆到三角形上</h2>
+
+<p>网格上 $f$ 是分片线性的，所以在每个三角形 $T$ 内，$\nabla f$ 是常数。展开成基函数：</p>
+
+<div class="formula">$$\nabla f=\sum_{i}f_i\nabla\phi_i$$</div>
+
+<p>平方一下（向量的平方就是自己点自己）：</p>
+
+<div class="formula">$$|\nabla f|^2=\left(\sum_i f_i\nabla\phi_i\right)\cdot\left(\sum_j f_j\nabla\phi_j\right)=\sum_{i,j}f_if_j\,\nabla\phi_i\cdot\nabla\phi_j$$</div>
+
+<p>现在把第 3 章算出来的两个积分代进去：交叉项是 $-\frac12\cot\theta_k$，对角项是 $\frac12(\cot\theta_j+\cot\theta_k)$。</p>
+
+<p>设三角形的三个顶点是 $i,j,k$，把上面这个和逐项写在三角形 $T$ 上：</p>
+
+<div class="formula">$$\int_T|\nabla f|^2=\frac12\Big[\cot\theta_k(f_i-f_j)^2+\cot\theta_j(f_i-f_k)^2+\cot\theta_i(f_j-f_k)^2\Big]$$</div>
+
+<details>
+<summary>展开验证这一步（点开看代数）</summary>
+<div class="body">
+<p>右边展开，$f_i^2$ 的系数是 $\frac12(\cot\theta_k+\cot\theta_j)$，正好等于前面算的对角项 $\frac12(\cot\theta_j+\cot\theta_k)$。</p>
+<p>$f_if_j$ 的系数：从第一项 $\cot\theta_k(f_i-f_j)^2$ 展开得到 $-2\cot\theta_k f_if_j$，乘以 $\frac12$ 得 $-\cot\theta_k$。而前面算的“两倍交叉项”是 $2\times(-\frac12\cot\theta_k)=-\cot\theta_k$。对得上。</p>
+<p>另外两项（$f_if_k$、$f_jf_k$）同理。</p>
+</div>
+</details>
+
+<div class="keybox">
+<b>这个式子的意思</b>：一个三角形上的 Dirichlet 能量，等于三条边各自的“差值平方”乘以“对着这条边的那个角的余切”，再除以 2。<br>
+注意这个对应关系：边 $(i,j)$ 配的是<b>对着它的角</b> $\theta_k$，不是边两端的角。这是最容易记错的地方。
+</div>
+
+<h2>把所有三角形加起来，得到边上的权重</h2>
+
+<p>每条内部边被两个三角形共用。把两个三角形的贡献加起来，边 $(i,j)$ 的系数是</p>
+
+<div class="formula">$$w_{ij}=\frac12\left(\cot\alpha_{ij}+\cot\beta_{ij}\right)$$</div>
+
+<p>其中 $\alpha_{ij}$、$\beta_{ij}$ 是边 $i,j$ 两侧对着它的两个角。于是整个网格的能量可以写成一个非常干净的形式：</p>
+
+<div class="formula">$$E(f)=\frac12\sum_{\text{边}(i,j)}w_{ij}\,(f_i-f_j)^2$$</div>
+
+<details>
+<summary>为什么可以写成“每条边一项”（点开）</summary>
+<div class="body">
+<p>每个三角形贡献三项，每项对应它的一条边。把所有三角形的三项收集起来，凡是同一条边（被两个三角形共用），就合并成一项，系数相加。边界边只有一个三角形，就只有一份。</p>
+<p>合并后，边的系数自然变成 $\frac12(\cot\alpha+\cot\beta)$。注意前面的 $\frac12$ 是从三角形公式里带出来的。</p>
+</div>
+</details>
+
+<h2>求导：得到 Laplace 算子</h2>
+
+<p>能量最小，就要对每个 $f_i$ 求偏导并令其为零。$f_i$ 只出现在与 $i$ 相邻的那些边里。对一条边 $(i,j)$，$\frac12w_{ij}(f_i-f_j)^2$ 对 $f_i$ 求导得 $w_{ij}(f_i-f_j)$。把所有相邻边加起来：</p>
+
+<div class="formula">$$\frac{\partial E}{\partial f_i}=\sum_{j}w_{ij}(f_i-f_j)$$</div>
+
+<p>令它等于零，就得到一个非常直观的结论：</p>
+
+<div class="formula">$$f_i=\frac{\sum_j w_{ij}f_j}{\sum_j w_{ij}}$$</div>
+
+<p>也就是说：<b>没有约束时，能量最小的函数在每个顶点都等于它邻居的加权平均</b>。这就是“调和函数”的离散版本。第 6 章参数化就是解这个方程（未知量是 $u$、$v$ 坐标）。</p>
+
+<p>把上式整理一下，定义</p>
+
+<div class="formula">$$\Delta f_i=\frac{1}{2A_i}\sum_j w_{ij}(f_j-f_i)$$</div>
+
+<p>这里 $w_{ij}$ 用的是“不除以 2”的版本（$\cot\alpha+\cot\beta$），$A_i$ 是顶点 $i$ 的混合面积。这样定义的好处是：$\frac{\partial E}{\partial f_i}=-A_i\Delta f_i$，能量梯度与算子符号一致。系数 $1/(2A_i)$ 保证“面积越小、曲率贡献越大”，这是逐点曲率的正确归一化。</p>
+
+<div class="tip">
+<b>为什么不同教材的系数差 2 倍</b>：有的把 $w$ 定义成 $\frac12(\cot\alpha+\cot\beta)$，有的定义成 $\cot\alpha+\cot\beta$；再叠加“面积用 $A_i$ 还是 $2A_i$”。看公式时先看它“常数函数代进去是否为 0”，再看“正四面体算出来是不是 $\pi$”，两个都对就说明口径自洽，不必纠结字母。
+</div>
+
+<h2>手算：正四面体的一个顶点</h2>
+
+<p>正四面体，每条边长 1。取一个顶点 $i$，它有 3 个邻居，围成 3 个等边三角形。</p>
+
+<ul>
+<li>每条边的两侧对着它的角都是 $60^\circ$，所以 $w=\cot60^\circ+\cot60^\circ=1.1547$（边界处只有一个面，这里按两个面算，见下面的说明）。</li>
+<li>三个邻居的权重合计 $3\times1.1547=3.4641$。</li>
+<li>混合面积 $A_i$ 取“一圈面积的三分之一”：3 个三角形总面积 $3\times0.4330=1.299$，除以 3 得 $0.4330$。</li>
+<li>系数 $\dfrac{1}{2A_i}=\dfrac{1}{0.8660}=1.1547$，加上权重 $3.4641$，总系数 $1.1547\times3.4641=4.0$。</li>
+</ul>
+
+<p>也就是 $\Delta f_i=4\sum_j(f_j-f_i)$。这个“4”有含义：它是球面在正四面体上的离散化结果，与连续球面 Laplace 在半径合适时的值一致。第 4 章会解释为什么。</p>
+
+<details>
+<summary>为什么“边界处只有一个面”这句话在这里不适用（点开）</summary>
+<div class="body">
+<p>正四面体是闭合曲面，每条边被两个三角形共用，所以每条边都有两个“对边角”。上面的写法是对的。</p>
+<p>如果网格有开口边界，边界边附近只有一个三角形，那条边只能算一份 $\cot$，$A_i$ 也不能按“三分之一圈”算。这就是为什么“开边界网格”的算子要单独处理边界条件。</p>
+</div>
+</details>
+
+<h2>三条性质，判断算子写对没写对</h2>
+
+<ol>
+<li><b>常数在核里</b>：$f$ 全为 1 时，$\Delta f=0$。因为 $f_j-f_i=0$。这条对应“平移不改变形状”。</li>
+<li><b>对称</b>：$w_{ij}=w_{ji}$（同一条边两侧角相同）。对称保证能量矩阵对称，才能用 Cholesky。</li>
+<li><b>行和为 0</b>：矩阵每行加起来是 0，所以整体平移不改变结果，矩阵必奇异——解方程时必须至少固定一个点（或加约束项），否则无唯一解。</li>
+</ol>
+
+<p>第 3 条是最常被忽略的：很多人写“解 $Lx=b$”却忘了 $L$ 奇异，程序报错或得到一堆巨大数值，其实是漏了约束。</p>
+
+<h2>本章要带走的三条</h2>
+
+<ol>
+<li>Dirichlet 能量 = 每条边“差值平方 × 两侧余切和”。</li>
+<li>对能量求导得到加权平均条件，进而得到离散 Laplace 算子。</li>
+<li>算子必须满足：常数在核里、对称、行和为 0。</li>
+</ol>

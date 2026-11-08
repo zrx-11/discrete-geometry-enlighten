@@ -1,0 +1,83 @@
+<h2>把任意向量场拆成三块</h2>
+
+<p>Helmholtz 分解说的是：任何一个（足够光滑的）向量场，都可以拆成三部分：</p>
+
+<div class="formula">$$\vec u=\nabla\psi+\nabla\times\vec\omega+\vec h$$</div>
+
+<ul>
+<li>$\nabla\psi$：<b>梯度部分</b>。它来自某个标量函数，可以积分出高度。</li>
+<li>$\nabla\times\vec\omega$：<b>旋转部分</b>。它是“漩涡”，无散（$\nabla\cdot(\nabla\times\vec\omega)=0$），没有“源”也没有“汇”。</li>
+<li>$\vec h$：<b>调和部分</b>。既是梯度又是旋转（只在有洞的区域出现）。</li>
+</ul>
+
+<p>这三块互相“垂直”（在积分意义下），所以分解是唯一的（除去常数）。</p>
+
+<div class="intuition">
+<b>直觉</b>：把水流拆成“从高处往低处流”（梯度）和“打转”（旋转）。前者能画出等高线，后者不能——漩涡中心的水位没有定义。<b>失效边界</b>：在有洞的区域（比如绕着柱子），水既能绕圈又处处无旋，这就是调和部分，它让分解变得棘手。
+</div>
+
+<h2>关键结论：只有梯度部分可积</h2>
+
+<p>上一章的旋转场 $\vec u=(-y,x)$ 就是纯旋转部分：$\nabla\cdot\vec u=0$（它无散），所以它的“散度”为零。如果你用最小二乘去找一个 $f$ 使 $\nabla f\approx\vec u$，结果会得到 $f=$ 常数——旋转部分被完全丢掉了。</p>
+
+<p>这件事在形变里极其重要：<b>如果你想“整体旋转 90°”，梯度域方法会把旋转当成“不可积的垃圾”丢掉，于是模型不会被转过去，只会被压扁。</b> 这就是为什么要引入 $R_i$（第 6 章的 ARAP）。</p>
+
+<h2>推导 Poisson：从最小二乘到方程</h2>
+
+<p>目标是找 $f$ 使 $\nabla f$ 尽量接近 $\vec u$：</p>
+
+<div class="formula">$$E(f)=\frac12\int\left|\nabla f-\vec u\right|^2\,dA$$</div>
+
+<p>取一个“试探方向” $g$（任意函数），考虑 $f+\epsilon g$ 的能量，对 $\epsilon$ 求导并令 $\epsilon=0$ 时为零（这就是“变分”）：</p>
+
+<div class="formula">$$\left.\frac{d}{d\epsilon}E(f+\epsilon g)\right|_{\epsilon=0}=\int(\nabla f-\vec u)\cdot\nabla g\,dA=0$$</div>
+
+<p>用分部积分（把 $\nabla$ 从 $g$ 上“搬到”前面）：</p>
+
+<div class="formula">$$\int(\nabla f-\vec u)\cdot\nabla g\,dA=-\int\nabla\cdot(\nabla f-\vec u)\,g\,dA+\text{边界项}$$</div>
+
+<p>边界项在“固定边界”或“自然边界条件”下为零。由于上式对任意 $g$ 都要成立，括号里必须处处为零：</p>
+
+<div class="formula">$$\nabla\cdot(\nabla f-\vec u)=0\ \Rightarrow\ \Delta f=\nabla\cdot\vec u$$</div>
+
+<div class="keybox">
+<b>这就是 Poisson 方程</b>：$\Delta f=\nabla\cdot\vec u$。左边是“函数 $f$ 的拉普拉斯”，右边是“给定场的散度”。<br>
+一句话：<b>不要直接积分 $u$，而是把 $u$ 的散度当成“源”，解一个 Poisson 方程</b>。这一步自动把旋转部分投影掉了。
+</div>
+
+<h2>离散版：$D^{\top}Df=D^{\top}e$</h2>
+
+<p>离散下更简单，不需要分部积分。目标 $E=\frac12\|Df-e\|^2$，对 $f$ 求导：</p>
+
+<div class="formula">$$D^{\top}(Df-e)=0\ \Rightarrow\ D^{\top}D\,f=D^{\top}e$$</div>
+
+<p>前面已经算过：$D^{\top}D$ 就是图拉普拉斯 $L$，$D^{\top}e$ 就是散度 $\delta$。所以这就是 $Lf=\delta$。</p>
+
+<p>拿一维链验证：$e=(1,1,1)$，$D^{\top}e=(1,0,0,-1)$（前面手算过），所以 $Lf=(1,0,0,-1)$。解出来（带边界条件）正是原来的 $0,1,2,3$。</p>
+
+<h3>再看旋转场的离散版</h3>
+
+<p>取一个正方形网格，四条边的差按“绕圈”的方式给（每条边都指向逆时针方向、长度相等）。此时每个三角形的差之和不为零（绕一圈有净环量），所以 $D^{\top}e$ 在内部顶点处为 0（流入等于流出），只在边界处非零。解出来的 $f$ 在内部是常数——旋转被丢掉了，只剩边界效应。</p>
+
+<p>这个结果不是 bug，而是“梯度域只能表达梯度”的直接后果。</p>
+
+<h2>为什么叫“梯度域”</h2>
+
+<p>“域”指的是“在什么空间里操作”。位置域是直接改坐标；梯度域是先改“每个局部的差”，再反解坐标。差别在这里：</p>
+
+<table class="kv">
+<tr><th></th><th>位置域</th><th>梯度域</th></tr>
+<tr><td>保什么</td><td>精确控制每个顶点</td><td>保局部差分（细节）</td></tr>
+<tr><td>代价</td><td>细节被拉伸/压扁</td><td>需要解全局方程</td></tr>
+<tr><td>典型失败</td><td>大面积拖动后细节消失</td><td>大旋转被当成“不可积”丢掉</td></tr>
+</table>
+
+<p>所以梯度域适合“保细节的整体变形”（比如把一个人拉长、把椅子腿折弯），不适合“整体大旋转”。后者要靠 ARAP 的逐三角形旋转来补。</p>
+
+<h2>本章要带走的三条</h2>
+
+<ol>
+<li>任意向量场 = 梯度 + 旋转 + 调和；只有梯度部分能积分出函数。</li>
+<li>最小化 $\int|\nabla f-u|^2$ 得到 Poisson 方程 $\Delta f=\nabla\cdot u$。</li>
+<li>离散版是 $Lf=\delta$；旋转部分会被自动投影掉，这正是梯度域的局限。</li>
+</ol>

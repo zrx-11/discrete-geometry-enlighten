@@ -1,0 +1,115 @@
+<h2>向量的意思就是“从这走到那”</h2>
+
+<p>把点 $A=(1,2)$ 走到点 $B=(4,6)$，中间挪了多少？横着挪 3，竖着挪 4。这个“横 3 竖 4”就记成向量 $\vec{AB}=(3,4)$。它没有起点，只有“怎么挪”。</p>
+
+<p>长度怎么算？横着挪 3 竖着挪 4，走的是直角三角形的斜边，勾股定理：</p>
+
+<div class="formula">$$|\vec{AB}|=\sqrt{3^2+4^2}=\sqrt{9+16}=5$$</div>
+
+<p>这就是距离公式的全部来历。三维只是多一条直角边：$|(3,4,12)|=\sqrt{9+16+144}=13$。</p>
+
+<h2>点积：把“夹角”变成乘法</h2>
+
+<p>两个向量 $\vec a=(a_1,a_2)$、$\vec b=(b_1,b_2)$，定义</p>
+
+<div class="formula">$$\vec a\cdot\vec b=a_1b_1+a_2b_2$$</div>
+
+<p>就这么个数，两个分量分别相乘再相加。它为什么有用？因为算出来它等于</p>
+
+<div class="formula">$$\vec a\cdot\vec b=|\vec a|\,|\vec b|\cos\theta$$</div>
+
+<p>其中 $\theta$ 是两向量的夹角。也就是说：<b>知道点积，就能反推夹角</b>。反过来，$\cos\theta=\dfrac{\vec a\cdot\vec b}{|\vec a||\vec b|}$。</p>
+
+<div class="intuition">
+<b>直觉</b>：点积在问“你在多大程度上朝着我这边”。方向一致 $\cos=1$，点积最大；垂直 $\cos=0$，点积为零；反着走 $\cos=-1$，点积是负的。<b>失效边界</b>：这个说法只在二维/三维的“箭头”直觉里成立，高维里没法画出来，但公式照样对。
+</div>
+
+<h3>例：算一个夹角</h3>
+
+<p>$\vec a=(1,0)$，$\vec b=(1,1)$。</p>
+
+<ul>
+<li>$\vec a\cdot\vec b=1\times1+0\times1=1$</li>
+<li>$|\vec a|=1$，$|\vec b|=\sqrt{1+1}=\sqrt2$</li>
+<li>$\cos\theta=\dfrac{1}{1\cdot\sqrt2}=\dfrac{1}{\sqrt2}\approx0.7071$</li>
+<li>所以 $\theta=45^\circ$。</li>
+</ul>
+
+<p>这个数待会儿会反复出现：$45^\circ$ 的余切 $\cot45^\circ=1$。</p>
+
+<h2>二维叉积：把“面积”变成乘法</h2>
+
+<p>平面上的两个向量 $\vec a=(a_1,a_2)$、$\vec b=(b_1,b_2)$，它们的“叉积”（只有二维才有这个标量版本）是</p>
+
+<div class="formula">$$a_1b_2-a_2b_1$$</div>
+
+<p>它的绝对值等于这两个向量张成的平行四边形面积。为什么？自己验一遍：$\vec a=(1,0)$、$\vec b=(0,1)$，叉积 $=1\times1-0\times0=1$，正好是边长 1 的正方形面积 1。</p>
+
+<p>三角形是平行四边形的一半，所以<b>三角形面积</b></p>
+
+<div class="formula">$$A=\frac12\left|a_1b_2-a_2b_1\right|$$</div>
+
+<p>三维里叉积是个向量，长度等于平行四边形面积，方向垂直于平面（右手定则）。本课只需要它的长度。</p>
+
+<h3>例：算一个三角形面积</h3>
+
+<p>三角形三个顶点 $(0,0)$、$(3,0)$、$(0,4)$。两条边向量 $\vec a=(3,0)$、$\vec b=(0,4)$。</p>
+
+<div class="formula">$$A=\frac12|3\times4-0\times0|=\frac12\times12=6$$</div>
+
+<p>底 3 高 4，$\frac12\times3\times4=6$，对得上。</p>
+
+<h2>余切是什么，为什么它会出现在几何里</h2>
+
+<p>直角三角形里，角 $\theta$ 的余切是“邻边除以对边”：$\cot\theta=\dfrac{\cos\theta}{\sin\theta}$。</p>
+
+<p>它有两个好性质，后面全靠它们：</p>
+
+<ol>
+<li><b>它没有单位</b>。邻边和对边都是长度，相除就抵消了。所以余切权重只关心“三角形的形状”，不关心它有多大。</li>
+<li><b>它会在钝角变负</b>。$\theta>90^\circ$ 时 $\cos\theta$ 为负，$\sin\theta$ 仍为正，于是 $\cot\theta$ 为负。第 4 章会说这个负号意味着什么。</li>
+</ol>
+
+<h3>几个必须背下来的值</h3>
+
+<table class="kv">
+<tr><th>角</th><th>$\sin$</th><th>$\cos$</th><th>$\cot=\cos/\sin$</th></tr>
+<tr><td>$30^\circ$</td><td>$0.5$</td><td>$0.8660$</td><td>$1.7321$</td></tr>
+<tr><td>$45^\circ$</td><td>$0.7071$</td><td>$0.7071$</td><td>$1$</td></tr>
+<tr><td>$60^\circ$</td><td>$0.8660$</td><td>$0.5$</td><td>$0.5774$</td></tr>
+<tr><td>$90^\circ$</td><td>$1$</td><td>$0$</td><td>$0$</td></tr>
+<tr><td>$120^\circ$</td><td>$0.8660$</td><td>$-0.5$</td><td>$-0.5774$</td></tr>
+<tr><td>$135^\circ$</td><td>$0.7071$</td><td>$-0.7071$</td><td>$-1$</td></tr>
+</table>
+
+<p>注意 $90^\circ$ 那一行：余切为 0。也就是说，直角边的“权重”是零——这正是后面“直角三角形的边不影响权重”的来源。</p>
+
+<div class="tip">
+<b>别背错</b>：$\cot=\cos/\sin$，不是 $\sin/\cos$。$\sin/\cos$ 是 $\tan$。混淆的话，$60^\circ$ 就会被写成 $1.7321$ 而不是 $0.5774$，后面的权重会差 3 倍。
+</div>
+
+<h2>动手：拖动一下，看余切怎么变号</h2>
+
+<div class="demo">
+<canvas id="cv-cot" width="480" height="230"></canvas>
+<div class="v">拖动下面的滑块，改变顶点 C 的位置。看 C 处的内角 $\theta_C$ 和 $\cot\theta_C$ 怎么变。</div>
+<input type="range" id="sl-cot" min="0" max="100" value="50">
+<div class="v" id="out-cot"></div>
+</div>
+
+<details>
+<summary>这个示意在画什么（点开）</summary>
+<div class="body">
+<p>底边 AB 固定，C 在一条竖直线上上下移动。C 越低，C 处的角越大。</p>
+<p>角小于 $90^\circ$ 时 $\cot$ 为正，权重为正，这个顶点对邻居是“正常吸引”；角超过 $90^\circ$ 时 $\cot$ 变负，权重变负，算子开始出现“反向扩散”。</p>
+<p>你可以看到 C 一直降到底边以下时，角会迅速接近 $180^\circ$，$\cot$ 趋向 $-\infty$。这说明钝角三角形的权重可以很负——不是“稍微负一点”。</p>
+</div>
+</details>
+
+<h2>本章的三件事，记住就够</h2>
+
+<ol>
+<li>长度用勾股，面积用叉积的一半，夹角用点积。</li>
+<li>余切 = 邻边 / 对边 = $\cos/\sin$，无单位，钝角为负。</li>
+<li>三角形面积 $A=\frac12|\vec a\times\vec b|$，这也是后面“梯度大小 = 对边长度 / (2A)”的来源。</li>
+</ol>
